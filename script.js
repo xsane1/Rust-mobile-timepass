@@ -1,611 +1,411 @@
-/* ============================================================
-   Rust Mobile Fun Analyzer — script.js
-   Vanilla JavaScript only (no external libraries)
-   Production-ready, mobile friendly, well-commented.
-   ============================================================ */
+/* Will I Get Offlined? v1 */
+/* Brand: XSANE Rust Mobile */
 
-(function () {
-  "use strict";
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-  /* -----------------------------
-     Utilities
-  ------------------------------ */
-
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
-
-  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
-  // Safe localStorage wrapper
-  const storage = {
-    get(key, fallback) {
-      try {
-        const v = localStorage.getItem(key);
-        if (v === null || v === undefined) return fallback;
-        return JSON.parse(v);
-      } catch {
-        return fallback;
-      }
-    },
-    set(key, value) {
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-      } catch {
-        // Ignore storage failures (e.g., blocked storage)
-      }
-    }
-  };
-
-  // Toast system
-  let toastTimer = null;
-  function showToast(message, { duration = 2600 } = {}) {
-    // Create toast element if missing
-    let toastEl = $("#toast");
-    if (!toastEl) {
-      toastEl = document.createElement("div");
-      toastEl.id = "toast";
-      // Minimal inline style so it works even without CSS expectations
-      toastEl.style.position = "fixed";
-      toastEl.style.left = "50%";
-      toastEl.style.bottom = "18px";
-      toastEl.style.transform = "translateX(-50%)";
-      toastEl.style.zIndex = "99999";
-      toastEl.style.padding = "12px 14px";
-      toastEl.style.borderRadius = "999px";
-      toastEl.style.background = "rgba(0,0,0,0.85)";
-      toastEl.style.color = "#fff";
-      toastEl.style.fontFamily = "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
-      toastEl.style.fontSize = "14px";
-      toastEl.style.maxWidth = "92vw";
-      toastEl.style.textAlign = "center";
-      toastEl.style.boxShadow = "0 8px 20px rgba(0,0,0,0.35)";
-      toastEl.style.opacity = "0";
-      toastEl.style.transition = "opacity 180ms ease, transform 180ms ease";
-      toastEl.style.pointerEvents = "none";
-      document.body.appendChild(toastEl);
-    }
-
-    toastEl.textContent = message;
-
-    // Animate in
-    toastEl.style.opacity = "1";
-    toastEl.style.transform = "translateX(-50%) translateY(-2px)";
-
-    // Clear old timer
-    if (toastTimer) clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-      toastEl.style.opacity = "0";
-      toastEl.style.transform = "translateX(-50%) translateY(4px)";
-    }, duration);
-  }
-
-  // Winner popup / modal helper
-  function createModal({
-    title = "Result",
-    message = "",
-    primaryText = "OK",
-    onPrimary = null,
-    secondaryText = "Close",
-    onSecondary = null
-  } = {}) {
-    // Ensure modal doesn't exist
-    const existing = $("#winnerModal");
-    if (existing) existing.remove();
-
-    const overlay = document.createElement("div");
-    overlay.id = "winnerModalOverlay";
-    overlay.style.position = "fixed";
-    overlay.style.inset = "0";
-    overlay.style.background = "rgba(0,0,0,0.55)";
-    overlay.style.zIndex = "100000";
-    overlay.style.display = "flex";
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-    overlay.style.padding = "18px";
-
-    const modal = document.createElement("div");
-    modal.id = "winnerModal";
-    modal.style.width = "min(520px, 92vw)";
-    modal.style.background = "#111";
-    modal.style.color = "#fff";
-    modal.style.borderRadius = "16px";
-    modal.style.overflow = "hidden";
-    modal.style.boxShadow = "0 18px 50px rgba(0,0,0,0.55)";
-    modal.style.fontFamily = "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
-
-    const header = document.createElement("div");
-    header.style.padding = "16px 16px 10px 16px";
-    header.style.borderBottom = "1px solid rgba(255,255,255,0.12)";
-
-    const h = document.createElement("div");
-    h.textContent = title;
-    h.style.fontWeight = "800";
-    h.style.fontSize = "18px";
-    h.style.lineHeight = "1.3";
-
-    const body = document.createElement("div");
-    body.style.padding = "14px 16px 2px 16px";
-    body.style.fontSize = "14px";
-    body.style.color = "rgba(255,255,255,0.92)";
-    body.style.whiteSpace = "pre-wrap";
-    body.textContent = message;
-
-    const footer = document.createElement("div");
-    footer.style.padding = "14px 16px 16px 16px";
-    footer.style.display = "flex";
-    footer.style.gap = "10px";
-    footer.style.justifyContent = "flex-end";
-
-    const btnSecondary = document.createElement("button");
-    btnSecondary.textContent = secondaryText;
-    btnSecondary.type = "button";
-    btnSecondary.style.background = "rgba(255,255,255,0.08)";
-    btnSecondary.style.color = "#fff";
-    btnSecondary.style.border = "1px solid rgba(255,255,255,0.18)";
-    btnSecondary.style.padding = "10px 12px";
-    btnSecondary.style.borderRadius = "12px";
-    btnSecondary.style.fontWeight = "700";
-    btnSecondary.style.cursor = "pointer";
-
-    const btnPrimary = document.createElement("button");
-    btnPrimary.textContent = primaryText;
-    btnPrimary.type = "button";
-    btnPrimary.style.background = "#28a745";
-    btnPrimary.style.color = "#fff";
-    btnPrimary.style.border = "1px solid rgba(0,0,0,0.2)";
-    btnPrimary.style.padding = "10px 12px";
-    btnPrimary.style.borderRadius = "12px";
-    btnPrimary.style.fontWeight = "800";
-    btnPrimary.style.cursor = "pointer";
-
-    // Append
-    header.appendChild(h);
-    modal.appendChild(header);
-    modal.appendChild(body);
-    footer.appendChild(btnSecondary);
-    footer.appendChild(btnPrimary);
-    modal.appendChild(footer);
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-
-    // Close handlers
-    function close() {
-      overlay.remove();
-    }
-
-    btnSecondary.addEventListener("click", () => {
-      if (typeof onSecondary === "function") onSecondary();
-      close();
-    });
-
-    btnPrimary.addEventListener("click", () => {
-      if (typeof onPrimary === "function") onPrimary();
-      close();
-    });
-
-    // Click outside to close
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) close();
-    });
-
-    // Escape to close
-    document.addEventListener(
-      "keydown",
-      function escHandler(e) {
-        if (e.key === "Escape") {
-          document.removeEventListener("keydown", escHandler);
-          close();
+    /* ==========================================================================
+       1. Global Helper Utilities & Toast Notifications
+       ========================================================================== */
+    function showToast(message, type = 'info') {
+        let toastContainer = document.getElementById('rust-toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'rust-toast-container';
+            toastContainer.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                pointer-events: none;
+                max-width: 90vw;
+            `;
+            document.body.appendChild(toastContainer);
         }
-      },
-      { once: true }
-    );
 
-    // Focus primary for accessibility
-    btnPrimary.focus();
-  }
+        const toast = document.createElement('div');
+        const bgColor = type === 'hazard' || type === 'danger' ? '#CD412B' : (type === 'success' ? '#10B981' : '#1F242A');
+        const borderColor = type === 'hazard' || type === 'danger' ? '#FFA596' : (type === 'success' ? '#34D399' : '#3B424C');
 
-  // Make an element's text selectable without selecting everything
-  function getShareText() {
-    const resText = $("#resultText");
-    if (resText && resText.textContent) {
-      return resText.textContent.trim();
-    }
-    // Fallback: use a compact wheel result if available
-    const lastRes = storage.get("wheelLastResult", null);
-    if (lastRes && lastRes.text) return String(lastRes.text).trim();
-    return "Rust Mobile Fun Analyzer — Result: (no result stored)";
-  }
+        toast.style.cssText = `
+            background: ${bgColor};
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid ${borderColor};
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: auto;
+            text-align: center;
+        `;
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
 
-  /* -----------------------------
-     Loading Screen
-     ------------------------------ */
+        requestAnimationFrame(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        });
 
-  function setupLoadingScreen() {
-    const loader = $("#loadingScreen");
-    if (!loader) {
-      // Try common alternative ids/classes if any exist
-      const alt = $(".loading-screen") || $("#loading");
-      if (!alt) return;
-    }
-
-    const loaderEl = loader || $(".loading-screen") || $("#loading");
-
-    // Hide when DOM is ready (and a tiny delay for perceived smoothness)
-    const done = () => {
-      // Prefer adding a class to let CSS do the animation if present
-      loaderEl.classList.add("is-hidden");
-      loaderEl.style.opacity = "0";
-      loaderEl.style.pointerEvents = "none";
-      loaderEl.style.transition = loaderEl.style.transition || "opacity 240ms ease";
-      // Remove after transition
-      setTimeout(() => {
-        if (loaderEl && loaderEl.parentNode) loaderEl.parentNode.removeChild(loaderEl);
-      }, 300);
-    };
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => setTimeout(done, 250));
-    } else {
-      setTimeout(done, 250);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(16px)';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3200);
     }
 
-    // Also hide on window load to catch any late resources
-    window.addEventListener("load", () => setTimeout(done, 0), { once: true });
-  }
-
-  /* -----------------------------
-     Mobile Menu Toggle
-     ------------------------------ */
-
-  function setupMobileMenuToggle() {
-    // Common selectors (index.html controls actual IDs/classes)
-    const menuToggle =
-      $("#menuToggle") ||
-      $("#mobileMenuToggle") ||
-      $('[data-menu-toggle="true"]') ||
-      $(".menu-toggle");
-
-    const mobileMenu =
-      $("#mobileMenu") ||
-      $("#menu") ||
-      $(".mobile-menu") ||
-      $('[data-mobile-menu="true"]');
-
-    if (!menuToggle || !mobileMenu) return;
-
-    const isOpenClass = "is-open";
-
-    const setOpen = (open) => {
-      if (open) {
-        mobileMenu.classList.add(isOpenClass);
-        menuToggle.setAttribute("aria-expanded", "true");
-        document.body.classList.add("menu-open");
-      } else {
-        mobileMenu.classList.remove(isOpenClass);
-        menuToggle.setAttribute("aria-expanded", "false");
-        document.body.classList.remove("menu-open");
-      }
-    };
-
-    // Init ARIA state
-    if (!menuToggle.hasAttribute("aria-expanded")) {
-      menuToggle.setAttribute("aria-expanded", "false");
+    function copyToClipboard(text, successMsg = 'Copied to clipboard!') {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(successMsg, 'success');
+            }).catch(() => {
+                showToast(text, 'info');
+            });
+        } else {
+            showToast(text, 'info');
+        }
     }
 
-    setOpen(mobileMenu.classList.contains(isOpenClass));
+    /* ==========================================================================
+       2. Mobile Menu Toggle & Navigation
+       ========================================================================== */
+    const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
+    const mobileNavDrawer = document.getElementById('mobile-nav-drawer');
 
-    menuToggle.addEventListener("click", () => {
-      const open = !mobileMenu.classList.contains(isOpenClass);
-      setOpen(open);
+    if (mobileMenuBtn && mobileNavDrawer) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileNavDrawer.classList.toggle('open');
+        });
+
+        const drawerLinks = mobileNavDrawer.querySelectorAll('a');
+        drawerLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNavDrawer.classList.remove('open');
+            });
+        });
+    }
+
+    /* ==========================================================================
+       3. Back To Top Button & Floating Action
+       ========================================================================== */
+    let backToTopBtn = document.getElementById('back-to-top-btn');
+    if (!backToTopBtn) {
+        backToTopBtn = document.createElement('button');
+        backToTopBtn.id = 'back-to-top-btn';
+        backToTopBtn.className = 'back-to-top-btn';
+        backToTopBtn.innerHTML = '▲';
+        backToTopBtn.setAttribute('aria-label', 'Back to top of page');
+        document.body.appendChild(backToTopBtn);
+    }
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
     });
 
-    // Close on link click (mobile)
-    $$("a", mobileMenu).forEach((link) => {
-      link.addEventListener("click", () => setOpen(false));
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Close on clicking outside
-    document.addEventListener("click", (e) => {
-      const isOpen = mobileMenu.classList.contains(isOpenClass);
-      if (!isOpen) return;
+    /* ==========================================================================
+       4. Wipe Ticker Dynamic Updates
+       ========================================================================== */
+    const tickerMsg = document.getElementById('ticker-message');
+    const tickerFeed = [
+        "⚠️ HIGH THREAT DETECTED: 8-Man Zerg spotted crafting 48 Rockets in Grid G7 • Force Wipe Approaching • Keep TC Stocked!",
+        "🔥 RADAR ALERT: Heli down at Launch Site • 6 different groups contesting with HV rockets!",
+        "📡 XSANE TRANSMISSION: Air-lock open at Grid M12 • Bush grub spotted with Double Barrel shotgun!",
+        "🚨 CODE RED: Oil Rig crate hacked 4 minutes ago • Torpedo subs circling water perimeter • Stay alert!"
+    ];
+    let tickerIndex = 0;
+    if (tickerMsg) {
+        setInterval(() => {
+            tickerIndex = (tickerIndex + 1) % tickerFeed.length;
+            tickerMsg.style.opacity = '0';
+            setTimeout(() => {
+                tickerMsg.textContent = tickerFeed[tickerIndex];
+                tickerMsg.style.opacity = '1';
+            }, 300);
+        }, 7000);
+    }
 
-      const clickedInsideMenu = mobileMenu.contains(e.target);
-      const clickedToggle = menuToggle.contains(e.target);
-      if (!clickedInsideMenu && !clickedToggle) setOpen(false);
-    });
+    /* ==========================================================================
+       5. Will I Get Offlined? Checker
+       ========================================================================== */
+    const offlineForm = document.getElementById('offline-form');
+    const offlinePlaceholder = document.getElementById('offline-placeholder-state');
+    const offlineCalculated = document.getElementById('offline-calculated-state');
+    const riskPercentEl = document.getElementById('risk-percent');
+    const verdictTitleEl = document.getElementById('verdict-title');
+    const verdictDescEl = document.getElementById('verdict-desc');
+    const timeToBoomEl = document.getElementById('time-to-boom');
+    const sulfurCostEl = document.getElementById('sulfur-cost');
+    const weakestPointEl = document.getElementById('weakest-point');
+    const survivalRecEl = document.getElementById('survival-rec');
+    const offlineQuoteEl = document.getElementById('offline-quote');
 
-    // Close on ESC
-    document.addEventListener("keydown", (e) => {
-      if (e.key !== "Escape") return;
-      setOpen(false);
-    });
-  }
-
-  /* -----------------------------
-     Smooth Scrolling
-     ------------------------------ */
-
-  function setupSmoothScrolling() {
-    // Ensure anchor links scroll smoothly
-    document.addEventListener("click", (e) => {
-      const a = e.target.closest('a[href^="#"]');
-      if (!a) return;
-
-      const href = a.getAttribute("href");
-      if (!href || href === "#") return;
-
-      const target = $(href);
-      if (!target) return;
-
-      e.preventDefault();
-      // Mobile-friendly: use scrolling into view
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-      // Update URL hash without jump
-      if (history.replaceState) history.replaceState(null, "", href);
-      else location.hash = href;
-    }, { passive: true });
-
-    // Also set default behavior for focus jumps if keyboard nav uses hash
-    window.addEventListener("hashchange", () => {
-      const target = $(location.hash);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }
-
-  /* -----------------------------
-     Back To Top Button
-     ------------------------------ */
-
-  function setupBackToTop() {
-    const btn =
-      $("#backToTop") ||
-      $("#toTop") ||
-      $('[data-back-to-top="true"]') ||
-      $(".back-to-top");
-
-    if (!btn) return;
-
-    const showAt = 300;
-
-    const setVisible = (visible) => {
-      btn.classList.toggle("is-visible", visible);
-      btn.style.opacity = visible ? "1" : "0";
-      btn.style.pointerEvents = visible ? "auto" : "none";
-    };
-
-    setVisible(window.scrollY > showAt);
-
-    window.addEventListener("scroll", () => {
-      setVisible(window.scrollY > showAt);
-    }, { passive: true });
-
-    btn.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  }
-
-  /* -----------------------------
-     Offline Raid Checker
-     ------------------------------ */
-
-  function setupOfflineRaidChecker() {
-    const trigger =
-      $("#raidCheckBtn") ||
-      $("#offlineRaidBtn") ||
-      $("#raidBtn") ||
-      $('[data-raid-check="true"]') ||
-      $(".raid-check");
-
-    const resultRisk = $("#raidRisk") || $("#riskLevel") || $("#raidRiskLevel");
-    const resultChance = $("#raidChance") || $("#raidPercent") || $("#raidChanceText");
-    const resultComment = $("#raidComment") || $("#raidFunnyComment") || $("#raidCommentText");
-
-    if (!trigger && (!resultRisk || !resultChance || !resultComment)) return;
-
-    const raidComments = [
-      "Buckle up. Your base is about to get *tested* like it’s in a Rust lab.",
-      "Somebody’s about to discover your loot… and your lack of upkeep.",
-      "Tonight’s agenda: door math, cupboard drama, and questionable decisions.",
-      "Your sleeping cam has been rated 1/10 by the Roombas of Fate.",
-      "Hope you like random door skins. The raiders do.",
-      "May your bags be near—but your loot be closer.",
-      "If you hear footsteps, pretend you’re the wall. It’s safer.",
-      "Your offline raid is queued like a long-waiting recycler."
+    const offlineQuotes = [
+        "\"The only safe base in Rust is the one you haven't built yet.\" — XSANE",
+        "\"If you have 100 high qual in the core, the clan already knows.\" — Rust proverb",
+        "\"Sleep is just an invitation for sulfur enthusiasts to visit your loot room.\" — Server Veteran",
+        "\"They didn't raid you for profit; they raided you because you made a 1x1 too close to their compound.\" — XSANE"
     ];
 
-    const riskLabels = [
-      { min: 0, max: 19, label: "Low", vibe: "Probably just vibes." },
-      { min: 20, max: 49, label: "Medium", vibe: "Expect some attention." },
-      { min: 50, max: 79, label: "High", vibe: "Bring the headache." },
-      { min: 80, max: 100, label: "Insane", vibe: "You’re being audited." }
-    ];
+    if (offlineForm) {
+        offlineForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-    function compute() {
-      // Random raid chance percentage
-      const chance = Math.floor(Math.random() * 101); // 0..100
-      // Risk level derived from chance, but we can add some variance
-      const skew = Math.floor((Math.random() - 0.5) * 20); // -10..+9
-      const adjusted = clamp(chance + skew, 0, 100);
+            const baseTier = document.getElementById('base-tier').value;
+            const honeycomb = parseInt(document.getElementById('honeycomb-count').value, 10) || 0;
+            const doorPath = document.getElementById('door-path').value;
+            const compound = document.getElementById('compound-type').value;
+            const turrets = parseInt(document.getElementById('turrets-count').value, 10) || 0;
+            const offlineHours = parseInt(document.getElementById('offline-hours').value, 10) || 8;
+            const upkeepHours = parseInt(document.getElementById('upkeep-hours').value, 10) || 24;
+            const neighborThreat = document.getElementById('neighbor-threat').value;
+            const pissedZerg = document.getElementById('pissed-zerg').checked;
 
-      const risk = riskLabels.find((r) => adjusted >= r.min && adjusted <= r.max) || riskLabels[0];
-      const comment = raidComments[Math.floor(Math.random() * raidComments.length)];
-      return { chance, adjusted, riskLabel: risk.label, vibe: risk.vibe, comment };
+            // Base Risk Math
+            let risk = 35;
+
+            // Base tier modifications
+            if (baseTier === 'wood') risk += 50;
+            else if (baseTier === 'stone') risk += 20;
+            else if (baseTier === 'sheet') risk -= 5;
+            else if (baseTier === 'armored') risk -= 20;
+            else if (baseTier === 'bunker') risk -= 30;
+            else if (baseTier === 'cave') risk -= 15;
+
+            // Honeycomb
+            risk -= (honeycomb * 8);
+
+            // Door Path
+            if (doorPath === 'wood_doors') risk += 30;
+            else if (doorPath === 'single_sheet') risk += 15;
+            else if (doorPath === 'garage_doors') risk -= 15;
+            else if (doorPath === 'armored_doors') risk -= 25;
+
+            // Compound
+            if (compound === 'none') risk += 15;
+            else if (compound === 'wood_walls') risk += 5;
+            else if (compound === 'stone_walls') risk -= 10;
+            else if (compound === 'double_compound') risk -= 20;
+
+            // Turrets
+            risk -= Math.min(turrets * 4, 25);
+
+            // Offline hours factor
+            risk += Math.min(offlineHours * 2.5, 30);
+
+            // Upkeep danger (decay)
+            if (upkeepHours < offlineHours) risk += 45;
+
+            // Neighbor threat
+            if (neighborThreat === 'low') risk -= 15;
+            else if (neighborThreat === 'high') risk += 20;
+            else if (neighborThreat === 'zerg') risk += 35;
+            else if (neighborThreat === 'beef') risk += 45;
+
+            // Global chat trash talk factor
+            if (pissedZerg) risk += 40;
+
+            // Random variance factor (+/- 5%)
+            risk += Math.floor(Math.random() * 11) - 5;
+            risk = Math.max(5, Math.min(99, Math.round(risk)));
+
+            // Compute Sulfur cost & weak point
+            let sulfur = 2200;
+            let weakPoint = "Sheet Metal Doors";
+            let rec = "Add a bunker airlock and place shotty traps";
+
+            if (baseTier === 'wood' || doorPath === 'wood_doors') {
+                sulfur = 600;
+                weakPoint = "Wooden Exterior / Front Door";
+                rec = "Upgrade everything to Stone immediately or lose all loot";
+            } else if (doorPath === 'garage_doors' && honeycomb >= 2) {
+                sulfur = 9800;
+                weakPoint = "Top-down Splash via Roof";
+                rec = "Build roof shooting floor peaks with auto turrets";
+            } else if (baseTier === 'armored' || baseTier === 'bunker') {
+                sulfur = 15600;
+                weakPoint = "Splash rockets through external frame";
+                rec = "Hide your sulfur in an external 1x1 stash base";
+            } else if (compound === 'none') {
+                sulfur = 3200;
+                weakPoint = "Direct Doorcamp and Air-lock rush";
+                rec = "Erect stone high external walls and external TCs";
+            }
+
+            // Estimate Time Until Boom
+            let hoursRemaining = Math.max(0.5, (100 - risk) / 12).toFixed(1);
+
+            // Populate UI
+            if (offlinePlaceholder) offlinePlaceholder.classList.add('hidden');
+            if (offlineCalculated) offlineCalculated.classList.remove('hidden');
+
+            riskPercentEl.textContent = `${risk}%`;
+            timeToBoomEl.textContent = `~ ${hoursRemaining} hours`;
+            sulfurCostEl.textContent = `~ ${sulfur.toLocaleString()} Sulfur`;
+            weakestPointEl.textContent = weakPoint;
+            survivalRecEl.textContent = rec;
+            offlineQuoteEl.textContent = offlineQuotes[Math.floor(Math.random() * offlineQuotes.length)];
+
+            if (risk >= 80) {
+                verdictTitleEl.textContent = "100% WAKING UP ON THE BEACH";
+                verdictDescEl.textContent = "Your base is practically public property. Despawn your loot or kiss it goodbye.";
+                verdictTitleEl.style.color = "#EF4444";
+            } else if (risk >= 50) {
+                verdictTitleEl.textContent = "HIGH SEVERITY THREAT";
+                verdictDescEl.textContent = "Neighbors are actively counting your doors. Log off with high-tier gear on your body.";
+                verdictTitleEl.style.color = "#F59E0B";
+            } else {
+                verdictTitleEl.textContent = "SURVIVAL LIKELY (FOR NOW)";
+                verdictDescEl.textContent = "Raiders will likely bypass you for an easier 2x1 target nearby. Sleep tight!";
+                verdictTitleEl.style.color = "#10B981";
+            }
+
+            showToast(`Offline Raid Risk calculated: ${risk}%`, risk > 70 ? 'hazard' : 'info');
+        });
     }
 
-    const setText = (el, text) => {
-      if (!el) return;
-      el.textContent = text;
-    };
+    /* ==========================================================================
+       6. What Kind Of Rust Player Are You? (Archetypes)
+       ========================================================================== */
+    const playerQuizForm = document.getElementById('player-quiz-form');
+    const archetypeResultCard = document.getElementById('player-archetype-result');
+    const quizResetBtn = document.getElementById('quiz-reset-btn');
 
-    trigger?.addEventListener("click", () => {
-      const { chance, adjusted, riskLabel, vibe, comment } = compute();
-
-      setText(resultChance, `${chance}% raid chance`);
-      setText(resultRisk, `Risk: ${riskLabel} (${adjusted}% threat)`);
-      setText(resultComment, comment + " " + vibe);
-
-      // Update shared result text for copy/share features
-      const combined = `Offline Raid Check:\n- Raid chance: ${chance}%\n- Risk level: ${riskLabel} (${adjusted}% threat)\n- Funny comment: ${comment}`;
-      const rt = $("#resultText");
-      if (rt) rt.textContent = combined;
-
-      storage.set("lastOfflineRaid", {
-        chance,
-        adjusted,
-        riskLabel,
-        comment,
-        text: combined,
-        at: Date.now()
-      });
-
-      showToast("Raid checked. Your base is judging you.");
-    });
-
-    // Optional: Enter key activation for accessibility
-    trigger?.setAttribute?.("role", "button");
-  }
-
-  /* -----------------------------
-     What Kind Of Player Are You
-     ------------------------------ */
-
-  function setupPlayerTypeGenerator() {
-    const trigger =
-      $("#playerTypeBtn") ||
-      $("#whoAreYouBtn") ||
-      $("#playerTypeGeneratorBtn") ||
-      $('[data-player-type="true"]') ||
-      $(".player-type-check");
-
-    const titleEl = $("#playerTypeTitle") || $("#playerType") || $("#typeTitle");
-    const descEl = $("#playerTypeDescription") || $("#playerTypeDesc") || $("#typeDescription");
-    const badgeEl = $("#playerTypeBadge") || $("#typeBadge") || $("#badge");
-    const commentEl = $("#playerTypeFunnyComment") || $("#playerTypeComment") || $("#typeComment");
-
-    if (!trigger && (!titleEl || !descEl || !badgeEl || !commentEl)) return;
-
-    const results = [
-      {
-        title: "Sulfur Farmer",
-        description: "You know the way of the grind. Efficiency is your love language.",
-        badge: "🟡 Sulfur Approved",
-        comment: "If it’s not sulfur, it’s just… practice."
-      },
-      {
-        title: "Chad PvPer",
-        description: "You don’t avoid fights—you pick them like a buffet.",
-        badge: "🔴 PvP Chosen",
-        comment: "Your compound is a playlist of regrets."
-      },
-      {
-        title: "Base Builder",
-        description: "You craft aesthetics and security like it’s an art exhibit.",
-        badge: "🧱 Fortress Mode",
-        comment: "Your walls have walls. Respect."
-      },
-      {
-        title: "Loot Goblin",
-        description: "You loot like a raccoon with a schedule.",
-        badge: "🟢 Minimum Risk, Maximum Loot",
-        comment: "If it shines, it’s yours. Legally? Ask later."
-      },
-      {
-        title: "Roof Camper",
-        description: "You’ve mastered the art of being inconveniently high.",
-        badge: "🧤 Elevation Expert",
-        comment: "The clouds pay rent for your attention."
-      },
-      {
-        title: "Door Camper",
-        description: "You turn simple doors into emotional roller coasters.",
-        badge: "🚪 Door Discipline",
-        comment: "They open the door… you open the trauma."
-      },
-      {
-        title: "Offline Raider",
-        description: "You believe timing is a weapon.",
-        badge: "💣 Timed Justice",
-        comment: "Your silence is scarier than your rockets."
-      },
-      {
-        title: "Solo Warrior",
-        description: "No squad, no problem—just pure stubborn momentum.",
-        badge: "⚔️ One-Man Ops",
-        comment: "If teamwork was real, you wouldn’t be here."
-      },
-      {
-        title: "Professional Grub",
-        description: "You don’t just survive—you *specialize* in chaos.",
-        badge: "🥩 Certified Menace",
-        comment: "Your diet is pure RNG."
-      }
+    const archetypes = [
+        {
+            type: "Sulfur Farmer",
+            badge: "⛏️ THE COMPULSIVE MINER",
+            title: "The 24/7 Sulfur Farmer",
+            desc: "You log in solely to smack glowing nodes with a jackhammer until your inventory overflows with 60,000 sulfur. You don't even craft rockets; you just hoard sulfur in the TC until a zerg offlines you for it.",
+            naked: "10% (Harmless)",
+            morals: "Saintly",
+            sound: "*Clink clink clink*",
+            comment: "Raiders thank you for your voluntary resource donation service."
+        },
+        {
+            type: "Chad PvPer",
+            badge: "🎯 LASER BEAM MASTER",
+            title: "The Ak-47 Spray God",
+            desc: "You have 3,400 hours on aim-train servers and can triple-headshot someone at 200 meters. You never farm, you roam 5 minutes after wipe, and you treat every naked as a threat to national security.",
+            naked: "100% (Instant Kill)",
+            morals: "Ruthless",
+            sound: "*Dink dink dink*",
+            comment: "Spends 90% of your time inspecting your weapon skin."
+        },
+        {
+            type: "Professional Grub",
+            badge: "🐀 CERTIFIED BUSH GOBLIN",
+            title: "The Double Barrel Grub",
+            desc: "You carry nothing more than burlap shoes, a craftable eoka, and a dream. You sit silently in hemp bushes for 45 real-time minutes waiting to snatch a full metal kit from an unsuspecting farmer.",
+            naked: "80%",
+            morals: "Non-existent",
+            sound: "*Eoka click click BOOM*",
+            comment: "Zero kits invested, maximum salt harvested."
+        },
+        {
+            type: "Roof Camper",
+            badge: "🔭 TOWER WARLORD",
+            title: "The L96 Roof Goblin",
+            desc: "You haven't touched the grass outside your base since wipe day. You sit 8 stories up on your sniper turret plinking nakeds running by Outpost with an 8x scope and HV rockets.",
+            naked: "100% (From 400m away)",
+            morals: "Sub-zero",
+            sound: "*L96 supersonic crack*",
+            comment: "Expect 12 ladders and 4 C4s stuck to your roof tonight."
+        },
+        {
+            type: "Base Builder",
+            badge: "📐 ARCHITECTURAL GENIUS",
+            title: "The Suicide Bunker Architect",
+            desc: "You spent 4 hours in a creative build server designing a 3-floor pixel bunker with 14 door airlocks and roof drop-downs. Your teammates get lost inside your own base every single wipe.",
+            naked: "20%",
+            morals: "Orderly",
+            sound: "*Rotating triangle floor frame*",
+            comment: "Takes your team 15 minutes just to leave the front door."
+        },
+        {
+            type: "Loot Goblin",
+            badge: "🎒 HOARDER SUPREME",
+            title: "The Recycler Vacuum",
+            desc: "You cannot pass a single road barrel without hitting it. Your chests are filled with 40 guitar kits, 80 empty tuna cans, and 500 horse dung that you refuse to throw away.",
+            naked: "50%",
+            morals: "Greedy",
+            sound: "*Inventory full beep*",
+            comment: "Will die carrying 1,200 scrap because you wanted one more road sign."
+        },
+        {
+            type: "Solo Warrior",
+            badge: "🐺 LONE WOLF SURVIVOR",
+            title: "The Paranoid Solo",
+            desc: "You live in a secluded 1x2 in the snowy mountains. Every twig snapping sound gives you a minor cardiac arrest. You don't have friends; you have temporary truces with neighboring nakeds.",
+            naked: "40%",
+            morals: "Guarded",
+            sound: "*Creeping crouch-walk footsteps*",
+            comment: "Plays with game volume at 150% and Discord muted."
+        }
     ];
 
-    function randomResult() {
-      const pick = results[Math.floor(Math.random() * results.length)];
-      return pick;
+    if (playerQuizForm) {
+        playerQuizForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const selected = archetypes[Math.floor(Math.random() * archetypes.length)];
+
+            document.getElementById('archetype-badge').textContent = selected.badge;
+            document.getElementById('archetype-title').textContent = selected.title;
+            document.getElementById('archetype-desc').textContent = `${selected.desc} "${selected.comment}"`;
+            document.getElementById('trait-naked').textContent = selected.naked;
+            document.getElementById('trait-morals').textContent = selected.morals;
+            document.getElementById('trait-sound').textContent = selected.sound;
+
+            playerQuizForm.classList.add('hidden');
+            archetypeResultCard.classList.remove('hidden');
+
+            showToast(`Player Archetype Diagnosed: ${selected.type}!`, 'hazard');
+        });
     }
 
-    const setText = (el, text) => {
-      if (el) el.textContent = text;
-    };
+    if (quizResetBtn) {
+        quizResetBtn.addEventListener('click', () => {
+            archetypeResultCard.classList.add('hidden');
+            playerQuizForm.classList.remove('hidden');
+            playerQuizForm.reset();
+        });
+    }
 
-    trigger?.addEventListener("click", () => {
-      const r = randomResult();
-      setText(titleEl, r.title);
-      setText(descEl, r.description);
-      setText(badgeEl, r.badge);
-      setText(commentEl, r.comment);
+    /* ==========================================================================
+       7. Wheel Of Misfortune (Canvas & Physics Animation)
+       ========================================================================== */
+    const canvas = document.getElementById('misfortune-wheel');
+    const spinBtn = document.getElementById('spin-wheel-btn');
+    const misfortuneText = document.getElementById('misfortune-text');
+    const misfortuneTip = document.getElementById('misfortune-tip');
 
-      const combined = `Player Type:\n- Title: ${r.title}\n- Description: ${r.description}\n- Badge: ${r.badge}\n- Funny comment: ${r.comment}`;
-      const rt = $("#resultText");
-      if (rt) rt.textContent = combined;
-
-      storage.set("lastPlayerType", { ...r, text: combined, at: Date.now() });
-      showToast("Identity confirmed. Your enemies will understand soon.");
-    });
-  }
-
-  /* -----------------------------
-     Spin The Wheel
-     ------------------------------ */
-
-  function setupSpinTheWheel() {
-    const wheelEl =
-      $("#wheel") ||
-      $("#spinWheel") ||
-      $(".wheel") ||
-      $('[data-wheel="true"]');
-
-    const spinBtn =
-      $("#spinBtn") ||
-      $("#spinTheWheelBtn") ||
-      $('[data-spin="true"]') ||
-      $(".spin-button");
-
-    const winnerTitleEl = $("#wheelWinnerTitle") || $("#winnerTitle") || $("#wheelWinner");
-    const winnerDescEl = $("#wheelWinnerDesc") || $("#winnerDesc");
-
-    // Last 10 spins history
-    const historyEl = $("#spinHistory") || $("#wheelHistory") || $("#historyList");
-
-    const wheelRotationInput = wheelEl; // The element to rotate
-
-    if (!wheelEl || !spinBtn) return;
-
-    const wheelOptions = [
-      "Find AK Today",
-      "Offline Raid Incoming",
-      "Trust No One",
-      "Lucky Day",
-      "Door Camper Energy",
-      "Airfield Adventure",
-      "Sulfur Jackpot",
-      "Start Naked",
-      "Roof Camper",
-      "Base Destroyed",
-      "Rare Loot",
-      "Nothing Happens"
-    ];
-     
+    const wheelSlices = [
+        { label: "Find AK Today", color: "#1E293B", textCol: "#38BDF8", tip: "A wandering naked drops a full durability assault rifle right in front of you!" },
+        { label: "Offline Raid Incoming", color: "#CD412B", textCol: "#FFFFFF", tip: "Your base has been scouted by an 8-man zerg. Start packing the bunker." },
+        { label: "Trust No One", color: "#16181B", textCol: "#CBD5E1", tip: "The friendly naked offering you cooked bear meat has an eoka in his sash." },
+        { label: "Lucky Day", color: "#F59E0B", textCol: "#111315", tip: "Bandit wheel hits 20x for you twice in a row. Cash out and run!" },
+        { label: "Door Camper Energy", color: "#7C2D12", textCol: "#FFFFFF", tip: "Someone with a waterpipe has been sitting outside your airlock for 22 minutes." },
+        { label: "Airfield Adventure", color: "#1E293B", textCol: "#38BDF8", tip: "You loot the red room completely uncontested with 5 minutes before crate despawns." },
+        { label: "Sulfur Jackpot", color: "#F59E0B", textCol: "#111315", tip: "14 pristine sulfur nodes spawn grouped together in your snow valley." },
+        { label: "Start Naked", color: "#CD412B", textCol: "#FFFFFF", tip: "Spawn on the beach. Hear a minicopter 5 seconds later. RIP." },
+        { label: "Roof Camper", co
