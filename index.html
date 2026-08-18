@@ -1,0 +1,456 @@
+```html
+<!-- Rust Mobile Fun Analyzer v1 -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="XSANE Rust Mobile Fun Analyzer — Offline Raid Checker, Player Type, Spin the Wheel, Daily Fortune, Death Generator, Luck Meter, and more." />
+
+  <title>Rust Mobile Fun Analyzer | XSANE</title>
+
+  <link rel="icon" href="favicon.ico" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand" aria-label="Brand">
+        <a class="brand-link" href="#" aria-label="XSANE Home">
+          <span class="brand-mark" aria-hidden="true">XSANE</span>
+          <span class="brand-text">
+            <span class="brand-title">Rust Mobile Fun Analyzer</span>
+            <span class="brand-subtitle">
+              <span class="brand-subtitle-label">YouTube:</span>
+              <span class="brand-subtitle-value">XSANE Rust Mobile</span>
+            </span>
+          </span>
+        </a>
+      </div>
+
+      <nav class="site-nav" aria-label="Primary">
+        <button class="nav-toggle" type="button" aria-controls="primary-menu" aria-expanded="false">
+          <span class="nav-toggle-label">Menu</span>
+          <span class="nav-toggle-icon" aria-hidden="true"></span>
+        </button>
+
+        <ul class="nav-list" id="primary-menu">
+          <li class="nav-item"><a class="nav-link" href="#offline-raid-checker">Offline Raid Checker</a></li>
+          <li class="nav-item"><a class="nav-link" href="#player-type">What Kind Of Player Are You</a></li>
+          <li class="nav-item"><a class="nav-link" href="#spin-wheel">Spin The Wheel</a></li>
+          <li class="nav-item"><a class="nav-link" href="#daily-fortune">Daily Fortune</a></li>
+          <li class="nav-item"><a class="nav-link" href="#death-generator">Rust Death Generator</a></li>
+          <li class="nav-item"><a class="nav-link" href="#luck-meter">Luck Meter</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="site-main">
+    <!-- 1. Hero Section -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1 id="hero-title" class="hero-title">Rust Mobile Fun Analyzer</h1>
+          <p class="hero-lead">
+            Offline raid vibes, player identity vibes, wheel spins, daily fortune, death scenarios, and a luck meter—built for mobile.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#offline-raid-checker">
+              Start Offline Raid Check
+            </a>
+            <a class="btn btn-secondary" href="#luck-meter">
+              Check Your Luck
+            </a>
+          </div>
+
+          <div class="hero-badges" role="list" aria-label="Quick features">
+            <div class="badge" role="listitem">
+              <span class="badge-icon" aria-hidden="true">⚔️</span>
+              <span class="badge-text">Raid Checker</span>
+            </div>
+            <div class="badge" role="listitem">
+              <span class="badge-icon" aria-hidden="true">🧠</span>
+              <span class="badge-text">Player Type</span>
+            </div>
+            <div class="badge" role="listitem">
+              <span class="badge-icon" aria-hidden="true">🎡</span>
+              <span class="badge-text">Spin the Wheel</span>
+            </div>
+            <div class="badge" role="listitem">
+              <span class="badge-icon" aria-hidden="true">🍀</span>
+              <span class="badge-text">Luck Meter</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card" aria-label="Quick Analyzer Card">
+          <div class="hero-card-top">
+            <p class="hero-card-kicker">Quick Start</p>
+            <h2 class="hero-card-title">Pick your vibe</h2>
+            <p class="hero-card-subtitle">Tap a tool below. No installs. Just fun.</p>
+          </div>
+
+          <div class="hero-tool-grid" role="list" aria-label="Tool shortcuts">
+            <a class="tool-tile" href="#offline-raid-checker" role="listitem">
+              <span class="tool-tile-icon" aria-hidden="true">🕒</span>
+              <span class="tool-tile-title">Offline Raid Checker</span>
+              <span class="tool-tile-desc">Estimate raid readiness</span>
+            </a>
+            <a class="tool-tile" href="#player-type" role="listitem">
+              <span class="tool-tile-icon" aria-hidden="true">🎭</span>
+              <span class="tool-tile-title">Player Type Quiz</span>
+              <span class="tool-tile-desc">Discover your playstyle</span>
+            </a>
+            <a class="tool-tile" href="#spin-wheel" role="listitem">
+              <span class="tool-tile-icon" aria-hidden="true">🎯</span>
+              <span class="tool-tile-title">Spin the Wheel</span>
+              <span class="tool-tile-desc">Random rewards & prompts</span>
+            </a>
+            <a class="tool-tile" href="#death-generator" role="listitem">
+              <span class="tool-tile-icon" aria-hidden="true">💥</span>
+              <span class="tool-tile-title">Death Generator</span>
+              <span class="tool-tile-desc">Write your Rust downfall</span>
+            </a>
+          </div>
+
+          <div class="hero-card-bottom">
+            <div class="hero-mini-metrics" aria-label="Status indicators">
+              <div class="mini-metric">
+                <span class="mini-metric-label">Mode</span>
+                <span class="mini-metric-value" id="app-mode-label">Fun Analyzer</span>
+              </div>
+              <div class="mini-metric">
+                <span class="mini-metric-label">Today</span>
+                <span class="mini-metric-value" id="today-label">—</span>
+              </div>
+            </div>
+
+            <div class="hero-note">
+              <span class="hero-note-icon" aria-hidden="true">📱</span>
+              <span class="hero-note-text">Designed to feel fast and comfy on mobile.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Offline Raid Checker Section -->
+    <section id="offline-raid-checker" class="section offline-raid-checker" aria-labelledby="offline-raid-title">
+      <div class="container">
+        <header class="section-header">
+          <h2 id="offline-raid-title" class="section-title">Offline Raid Checker</h2>
+          <p class="section-subtitle">
+            Estimate raid readiness with simple inputs and an instant fun verdict.
+          </p>
+        </header>
+
+        <div class="grid grid-2">
+          <div class="card">
+            <form class="form" id="offlineRaidForm" autocomplete="off">
+              <div class="form-group">
+                <label class="form-label" for="raidTimeInput">Offline duration (hours)</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  id="raidTimeInput"
+                  name="raidTimeInput"
+                  inputmode="numeric"
+                  min="0"
+                  max="168"
+                  step="0.5"
+                  placeholder="e.g., 6"
+                  aria-describedby="raidTimeHelp"
+                />
+                <div class="form-help" id="raidTimeHelp">0 to 168 hours.</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="raidTypeSelect">Raid scenario</label>
+                <select class="form-control" id="raidTypeSelect" name="raidTypeSelect" aria-describedby="raidTypeHelp">
+                  <option value="solo">Solo</option>
+                  <option value="small-team">Small team</option>
+                  <option value="big-team">Big team</option>
+                  <option value="meme-raid">Meme raid</option>
+                </select>
+                <div class="form-help" id="raidTypeHelp">Choose the vibe for your estimate.</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="raidConfidenceSelect">Your readiness</label>
+                <select class="form-control" id="raidConfidenceSelect" name="raidConfidenceSelect">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit" id="offlineRaidCheckBtn">
+                  Check Offline Raid
+                </button>
+                <button class="btn btn-ghost" type="button" id="offlineRaidResetBtn">
+                  Reset
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card card-results" aria-live="polite">
+            <div class="results-top">
+              <h3 class="card-title">Verdict</h3>
+              <p class="card-subtitle" id="offlineRaidVerdictSubtitle">Enter values to get your result.</p>
+            </div>
+
+            <div class="result-hero" aria-label="Raid result">
+              <div class="result-badge" id="offlineRaidVerdictBadge" role="status">
+                <span class="result-badge-icon" aria-hidden="true">🧪</span>
+                <span class="result-badge-text">Waiting…</span>
+              </div>
+
+              <div class="result-score">
+                <div class="score-label">Raid Fun Score</div>
+                <div class="score-value" id="offlineRaidScoreValue">—</div>
+                <div class="score-meta" id="offlineRaidScoreMeta">—</div>
+              </div>
+            </div>
+
+            <div class="results-body">
+              <div class="result-row">
+                <span class="result-row-label">Offline hours</span>
+                <span class="result-row-value" id="offlineRaidHoursValue">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-row-label">Scenario</span>
+                <span class="result-row-value" id="offlineRaidScenarioValue">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-row-label">Readiness</span>
+                <span class="result-row-value" id="offlineRaidReadinessValue">—</span>
+              </div>
+            </div>
+
+            <div class="results-advice" id="offlineRaidAdvice" aria-label="Advice">
+              —
+            </div>
+
+            <div class="results-actions">
+              <button class="btn btn-secondary" type="button" id="offlineRaidCopyBtn" aria-label="Copy verdict">
+                Copy Verdict
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-note" role="note" aria-label="Section note">
+          <span class="section-note-icon" aria-hidden="true">ℹ️</span>
+          <span class="section-note-text">This is a fun analyzer. The goal is vibes, not guarantees.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. What Kind Of Player Are You Section -->
+    <section id="player-type" class="section player-type" aria-labelledby="playerTypeTitle">
+      <div class="container">
+        <header class="section-header">
+          <h2 id="playerTypeTitle" class="section-title">What Kind Of Player Are You</h2>
+          <p class="section-subtitle">
+            Answer a few quick questions and get a playstyle identity.
+          </p>
+        </header>
+
+        <div class="grid grid-2">
+          <div class="card">
+            <form class="form" id="playerTypeForm" autocomplete="off">
+              <div class="form-group">
+                <label class="form-label" for="q1Input">When you log in, you…</label>
+                <select class="form-control" id="q1Input" name="q1Input">
+                  <option value="farm">Farm resources first</option>
+                  <option value="pvp" selected>Hunt players and fight</option>
+                  <option value="build">Build something cool</option>
+                  <option value="scout">Scout monuments and plan</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="q2Input">Your ideal plan is…</label>
+                <select class="form-control" id="q2Input" name="q2Input">
+                  <option value="chaos">Chaos and improvisation</option>
+                  <option value="strategy" selected>Strategy with timing</option>
+                  <option value="stealth">Stealth and surprise</option>
+                  <option value="support">Support and teamwork</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="q3Input">How do you loot?</label>
+                <select class="form-control" id="q3Input" name="q3Input">
+                  <option value="clean">Efficient and organized</option>
+                  <option value="greedy">Risk it for the best stuff</option>
+                  <option value="careful" selected>Careful with choices</option>
+                  <option value="meme">YOLO memes only</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="q4Input">What do you value most?</label>
+                <select class="form-control" id="q4Input" name="q4Input">
+                  <option value="progress">Progress and unlocks</option>
+                  <option value="wins">Winning fights</option>
+                  <option value="style" selected>Style and vibe</option>
+                  <option value="friends">Friends and team energy</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit" id="playerTypeBtn">
+                  Reveal Player Type
+                </button>
+                <button class="btn btn-ghost" type="button" id="playerTypeResetBtn">
+                  Reset
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card card-results" aria-live="polite">
+            <div class="results-top">
+              <h3 class="card-title">Your Result</h3>
+              <p class="card-subtitle" id="playerTypeSubtitle">Answer the questions to see your identity.</p>
+            </div>
+
+            <div class="result-hero">
+              <div class="result-badge" id="playerTypeBadge" role="status">
+                <span class="result-badge-icon" aria-hidden="true">🧩</span>
+                <span class="result-badge-text">Waiting…</span>
+              </div>
+
+              <div class="result-score">
+                <div class="score-label">Playstyle Match</div>
+                <div class="score-value" id="playerTypeMatchValue">—</div>
+                <div class="score-meta" id="playerTypeMatchMeta">—</div>
+              </div>
+            </div>
+
+            <div class="results-body">
+              <div class="result-row">
+                <span class="result-row-label">Signature vibe</span>
+                <span class="result-row-value" id="playerTypeVibeValue">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-row-label">Strength</span>
+                <span class="result-row-value" id="playerTypeStrengthValue">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-row-label">Risk</span>
+                <span class="result-row-value" id="playerTypeRiskValue">—</span>
+              </div>
+            </div>
+
+            <div class="results-advice" id="playerTypeAdvice" aria-label="Advice">
+              —
+            </div>
+
+            <div class="results-actions">
+              <button class="btn btn-secondary" type="button" id="playerTypeCopyBtn" aria-label="Copy player type">
+                Copy Player Type
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-note" role="note">
+          <span class="section-note-icon" aria-hidden="true">🎭</span>
+          <span class="section-note-text">No judgment. Only vibes.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Spin The Wheel Section -->
+    <section id="spin-wheel" class="section spin-wheel" aria-labelledby="wheelTitle">
+      <div class="container">
+        <header class="section-header">
+          <h2 id="wheelTitle" class="section-title">Spin The Wheel</h2>
+          <p class="section-subtitle">
+            Spin for a random Rust-mobile prompt, reward, or chaos mode.
+          </p>
+        </header>
+
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="wheel-stage" aria-label="Wheel stage">
+              <div class="wheel-container">
+                <canvas id="wheelCanvas" class="wheel-canvas" width="420" height="420" aria-label="Spin wheel canvas"></canvas>
+
+                <div class="wheel-center" aria-hidden="true">
+                  <div class="wheel-center-inner">
+                    <span class="wheel-center-text">SPIN</span>
+                  </div>
+                </div>
+
+                <div class="wheel-pointer" aria-hidden="true"></div>
+              </div>
+
+              <div class="wheel-controls">
+                <button class="btn btn-primary" type="button" id="wheelSpinBtn" aria-label="Spin the wheel">
+                  Spin Now
+                </button>
+
+                <button class="btn btn-ghost" type="button" id="wheelResetBtn" aria-label="Reset wheel">
+                  Reset
+                </button>
+              </div>
+
+              <div class="wheel-meta" aria-label="Wheel meta">
+                <div class="wheel-meta-row">
+                  <span class="wheel-meta-label">Spins left</span>
+                  <span class="wheel-meta-value" id="wheelSpinsLeftValue">—</span>
+                </div>
+                <div class="wheel-meta-row">
+                  <span class="wheel-meta-label">Current streak</span>
+                  <span class="wheel-meta-value" id="wheelStreakValue">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-results" aria-live="polite">
+            <div class="results-top">
+              <h3 class="card-title">Wheel Result</h3>
+              <p class="card-subtitle" id="wheelResultSubtitle">Spin to reveal your result.</p>
+            </div>
+
+            <div class="result-hero">
+              <div class="result-badge" id="wheelResultBadge" role="status">
+                <span class="result-badge-icon" aria-hidden="true">🎡</span>
+                <span class="result-badge-text">Waiting…</span>
+              </div>
+
+              <div class="results-body">
+                <div class="result-row">
+                  <span class="result-row-label">Category</span>
+                  <span class="result-row-value" id="wheelCategoryValue">—</span>
+                </div>
+                <div class="result-row">
+                  <span class="result-row-label">Effect</span>
+                  <span class="result-row-value" id="wheelEffectValue">—</span>
+                </div>
+                <div class="result-row">
+                  <span class="result-row-label">Challenge level</span>
+                  <span class="result-row-value" id="wheelLevelValue">—</span>
+                </div>
+              </div>
+
+              <div class="results-advice" id="wheelPromptText" aria-label="Wheel prompt">
+                —
+              </div>
+            </div>
+
+            <div class="results-actions">
+              <button class="btn btn-secondary" type="button" id="wheel
