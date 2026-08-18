@@ -1,4 +1,3 @@
-```javascript
 /* ============================================================
    Rust Mobile Fun Analyzer — script.js
    Vanilla JavaScript only (no external libraries)
@@ -607,4 +606,6 @@
       "Roof Camper",
       "Base Destroyed",
       "Rare Loot",
-      "Nothing Ha
+      "Nothing Happens"
+    ];
+     
