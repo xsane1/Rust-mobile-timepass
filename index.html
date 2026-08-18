@@ -1,341 +1,328 @@
-<!-- Global Header / Navbar -->
-<header id="main-header" class="site-header">
-    <div class="header-container">
-        <div class="brand-group">
-            <a href="#hero" class="brand-link" id="brand-logo">
-                <span class="brand-accent">XSANE</span>
-                <span class="brand-sub">RUST MOBILE</span>
-            </a>
-            <span class="version-tag">v1.0 MIL-SPEC</span>
-        </div>
-
-        <nav id="primary-nav" class="nav-links">
-            <a href="#offline-checker" class="nav-item">Offline Checker</a>
-            <a href="#player-type" class="nav-item">Player Type</a>
-            <a href="#wheel-of-misfortune" class="nav-item">Wheel of Misfortune</a>
-            <a href="#rust-prophecy" class="nav-item">Prophecy</a>
-            <a href="#how-will-i-die" class="nav-item">Death Fate</a>
-            <a href="#how-cooked-am-i" class="nav-item">Cooked Meter</a>
-        </nav>
-
-        <div class="header-actions">
-            <a href="https://www.youtube.com/@XSANERustMobile" target="_blank" rel="noopener noreferrer" class="btn btn-youtube" id="yt-header-btn">
-                <span class="yt-icon">▶</span>
-                <span class="yt-label">XSANE YouTube</span>
-            </a>
-            <button id="mobile-menu-toggle" class="mobile-toggle-btn" aria-label="Toggle navigation menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Mobile Drawer Navigation -->
-    <div id="mobile-nav-drawer" class="mobile-drawer">
-        <a href="#offline-checker" class="drawer-link">Offline Checker</a>
-        <a href="#player-type" class="drawer-link">Player Type Quiz</a>
-        <a href="#wheel-of-misfortune" class="drawer-link">Wheel of Misfortune</a>
-        <a href="#rust-prophecy" class="drawer-link">Today's Prophecy</a>
-        <a href="#how-will-i-die" class="drawer-link">How Will I Die?</a>
-        <a href="#how-cooked-am-i" class="drawer-link">How Cooked Am I?</a>
-        <a href="https://www.youtube.com/@XSANERustMobile" target="_blank" rel="noopener noreferrer" class="drawer-link drawer-yt">
-            XSANE Rust Mobile YouTube
-        </a>
-    </div>
-</header>
-
-<main id="main-content" class="main-layout">
-    <!-- 1. Hero Section -->
-    <section id="hero" class="hero-section">
-        <div class="hero-backdrop"></div>
-        <div class="hero-container">
-            <div class="hero-badge-container">
-                <span class="hazard-badge">SURVIVAL THREAT DIAGNOSTICS</span>
-                <span class="brand-tag">POWERED BY XSANE</span>
-            </div>
-            
-            <h1 class="hero-title">
-                WILL I GET <span class="text-hazard">OFFLINED?</span>
-            </h1>
-            
-            <p class="hero-subtitle">
-                The brutally honest Rust survival probability engine. Calculate your base vulnerability, test your wipe luck, draw today's ominous prophecy, and find out if you'll wake up on the beach.
+<!-- Will I Get Offlined? v1 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will I Get Offlined? | XSANE Rust Mobile</title>
+    <meta name="description" content="The ultimate Rust survival calculator, offline raid probability checker, misfortune wheel, and daily wipe prophecy tool by XSANE.">
+    <meta name="keywords" content="Rust, Rust Mobile, XSANE, Offline Raid, Will I Get Offlined, Rust Calculator, Rust Survival, Rust Prophecy">
+    <meta property="og:title" content="Will I Get Offlined? | XSANE Rust Mobile">
+    <meta property="og:description" content="Calculate your offline raid chances, spin the wheel of misfortune, and discover today's Rust fate.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="rust-theme">
+    <!-- Top Alert / Server Wipe Ticker -->
+    <aside id="wipe-ticker" class="ticker-banner">
+        <div class="ticker-wrapper">
+            <span class="ticker-badge">RUST RADAR</span>
+            <p class="ticker-content" id="ticker-message">
+                ⚠️ HIGH THREAT DETECTED: 8-Man Zerg spotted crafting 48 Rockets in Grid G7 • Force Wipe Approaching • Keep TC Stocked!
             </p>
+        </div>
+    </aside>
 
-            <div class="hero-actions">
-                <a href="#offline-checker" class="btn btn-primary btn-glow" id="hero-calc-cta">
-                    Calculate Offline Risk
+    <!-- Global Header / Navbar -->
+    <header id="main-header" class="site-header">
+        <div class="header-container">
+            <div class="brand-group">
+                <a href="#hero" class="brand-link" id="brand-logo">
+                    <span class="brand-accent">XSANE</span>
+                    <span class="brand-sub">RUST MOBILE</span>
                 </a>
-                <a href="#wheel-of-misfortune" class="btn btn-secondary" id="hero-wheel-cta">
-                    Spin Misfortune Wheel
-                </a>
+                <span class="version-tag">v1.0 MIL-SPEC</span>
             </div>
 
-            <!-- Live Quick Stats Strip -->
-            <div class="quick-stats-grid" id="quick-stats-strip">
-                <div class="stat-card" id="stat-raid-prob">
-                    <span class="stat-icon">💣</span>
-                    <div class="stat-details">
-                        <span class="stat-value text-danger" id="live-raid-rate">84.2%</span>
-                        <span class="stat-label">Avg Night Raid Rate</span>
-                    </div>
-                </div>
-                <div class="stat-card" id="stat-safest-hour">
-                    <span class="stat-icon">🕒</span>
-                    <div class="stat-details">
-                        <span class="stat-value" id="live-danger-window">03:00 - 06:00</span>
-                        <span class="stat-label">Peak Offline Hours</span>
-                    </div>
-                </div>
-                <div class="stat-card" id="stat-nakeds-lost">
-                    <span class="stat-icon">💀</span>
-                    <div class="stat-details">
-                        <span class="stat-value text-accent" id="live-loot-status">Bagged & Tagged</span>
-                        <span class="stat-label">Server Status</span>
-                    </div>
-                </div>
+            <nav id="primary-nav" class="nav-links">
+                <a href="#offline-checker" class="nav-item">Offline Checker</a>
+                <a href="#player-type" class="nav-item">Player Type</a>
+                <a href="#wheel-of-misfortune" class="nav-item">Wheel of Misfortune</a>
+                <a href="#rust-prophecy" class="nav-item">Prophecy</a>
+                <a href="#how-will-i-die" class="nav-item">Death Fate</a>
+                <a href="#how-cooked-am-i" class="nav-item">Cooked Meter</a>
+            </nav>
+
+            <div class="header-actions">
+                <a href="https://www.youtube.com/@XSANERustMobile" target="_blank" rel="noopener noreferrer" class="btn btn-youtube" id="yt-header-btn">
+                    <span class="yt-icon">▶</span>
+                    <span class="yt-label">XSANE YouTube</span>
+                </a>
+                <button id="mobile-menu-toggle" class="mobile-toggle-btn" aria-label="Toggle navigation menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
             </div>
         </div>
-    </section>
 
-    <!-- 2. Will I Get Offlined? Checker -->
-    <section id="offline-checker" class="app-section section-dark">
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-tag">DIAGNOSTIC ENGINE 01</div>
-                <h2 class="section-title">Will I Get <span class="text-hazard">Offlined?</span> Checker</h2>
-                <p class="section-desc">Input your base build, material tier, hours away, and neighborhood toxicity to compute your exact raid probability.</p>
-            </div>
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobile-nav-drawer" class="mobile-drawer">
+            <a href="#offline-checker" class="drawer-link">Offline Checker</a>
+            <a href="#player-type" class="drawer-link">Player Type Quiz</a>
+            <a href="#wheel-of-misfortune" class="drawer-link">Wheel of Misfortune</a>
+            <a href="#rust-prophecy" class="drawer-link">Today's Prophecy</a>
+            <a href="#how-will-i-die" class="drawer-link">How Will I Die?</a>
+            <a href="#how-cooked-am-i" class="drawer-link">How Cooked Am I?</a>
+            <a href="https://www.youtube.com/@XSANERustMobile" target="_blank" rel="noopener noreferrer" class="drawer-link drawer-yt">
+                XSANE Rust Mobile YouTube
+            </a>
+        </div>
+    </header>
 
-            <div class="checker-grid">
-                <!-- Input Form -->
-                <form id="offline-form" class="panel-card form-panel">
-                    <h3 class="panel-heading">
-                        <span class="heading-icon">🛡️</span> Base & Session Parameters
-                    </h3>
+    <main id="main-content" class="main-layout">
+        <!-- 1. Hero Section -->
+        <section id="hero" class="hero-section">
+            <div class="hero-backdrop"></div>
+            <div class="hero-container">
+                <div class="hero-badge-container">
+                    <span class="hazard-badge">SURVIVAL THREAT DIAGNOSTICS</span>
+                    <span class="brand-tag">POWERED BY XSANE</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    WILL I GET <span class="text-hazard">OFFLINED?</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    The brutally honest Rust survival probability engine. Calculate your base vulnerability, test your wipe luck, draw today's ominous prophecy, and find out if you'll wake up on the beach.
+                </p>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="base-tier" class="form-label">Core Building Tier</label>
-                            <select id="base-tier" name="baseTier" class="form-select" required>
-                                <option value="wood">Twig / Wood 2x1 (Instant Target)</option>
-                                <option value="stone" selected>Stone (Standard Starting Base)</option>
-                                <option value="sheet">Sheet Metal (Decent Protection)</option>
-                                <option value="armored">High Quality Armored (Chunky Defense)</option>
-                                <option value="bunker">Pixel / Suicide Bunker (Experienced)</option>
-                                <option value="cave">Deep Cave Base (Nerve Wrecking)</option>
-                            </select>
-                        </div>
+                <div class="hero-actions">
+                    <a href="#offline-checker" class="btn btn-primary btn-glow" id="hero-calc-cta">
+                        Calculate Offline Risk
+                    </a>
+                    <a href="#wheel-of-misfortune" class="btn btn-secondary" id="hero-wheel-cta">
+                        Spin Misfortune Wheel
+                    </a>
+                </div>
 
-                        <div class="form-group">
-                            <label for="honeycomb-count" class="form-label">Honeycombing & Air-locks</label>
-                            <select id="honeycomb-count" name="honeycombCount" class="form-select">
-                                <option value="0">No Honeycomb (Single wall to TC)</option>
-                                <option value="1" selected>1 Layer Honeycomb (Standard 2x2)</option>
-                                <option value="2">2 Layers + Gap Honeycomb</option>
-                                <option value="3">3+ Layers Multi-TC Fortress</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="door-path" class="form-label">Door Path to Core TC</label>
-                            <select id="door-path" name="doorPath" class="form-select">
-                                <option value="wood_doors">Wood Doors only (Eoka tier)</option>
-                                <option value="single_sheet" selected>1-2 Sheet Metal Doors</option>
-                                <option value="garage_doors">3+ Garage Doors + Air-lock</option>
-                                <option value="armored_doors">Armored Doors + Reinforced Hatch</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="compound-type" class="form-label">External Compound</label>
-                            <select id="compound-type" name="compoundType" class="form-select">
-                                <option value="none" selected>No Compound / Wide Open</option>
-                                <option value="wood_walls">Wood High External Walls</option>
-                                <option value="stone_walls">Stone High External + Gate</option>
-                                <option value="double_compound">Double Layer + Auto Turrets</option>
-                            </select>
+                <!-- Live Quick Stats Strip -->
+                <div class="quick-stats-grid" id="quick-stats-strip">
+                    <div class="stat-card" id="stat-raid-prob">
+                        <span class="stat-icon">💣</span>
+                        <div class="stat-details">
+                            <span class="stat-value text-danger" id="live-raid-rate">84.2%</span>
+                            <span class="stat-label">Avg Night Raid Rate</span>
                         </div>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="turrets-count" class="form-label">Active Auto Turrets & Traps</label>
-                            <input type="number" id="turrets-count" name="turretsCount" class="form-input" min="0" max="50" value="1" placeholder="0">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="offline-hours" class="form-label">Hours Planned Offline</label>
-                            <input type="number" id="offline-hours" name="offlineHours" class="form-input" min="1" max="168" value="8" placeholder="Hours asleep">
+                    <div class="stat-card" id="stat-safest-hour">
+                        <span class="stat-icon">🕒</span>
+                        <div class="stat-details">
+                            <span class="stat-value" id="live-danger-window">03:00 - 06:00</span>
+                            <span class="stat-label">Peak Offline Hours</span>
                         </div>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="upkeep-hours" class="form-label">TC Upkeep Remaining (Hours)</label>
-                            <input type="number" id="upkeep-hours" name="upkeepHours" class="form-input" min="0" max="720" value="16" placeholder="Hours of upkeep">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="neighbor-threat" class="form-label">Neighborhood Threat Level</label>
-                            <select id="neighbor-threat" name="neighborThreat" class="form-select">
-                                <option value="low">Quiet Forest (Rare foot traffic)</option>
-                                <option value="medium" selected>Near Gas Station / Substation</option>
-                                <option value="high">Next to Launch Site / Oil Rig</option>
-                                <option value="zerg">Overlooked by a 12-Man Zerg Compound</option>
-                                <option value="beef">Pissed off the roofcamper 2 grids away</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="checkbox-container" for="pissed-zerg">
-                            <input type="checkbox" id="pissed-zerg" name="pissedZerg">
-                            <span class="custom-checkbox"></span>
-                            <span class="checkbox-label">Did you kill someone with an AK and talk trash in global chat?</span>
-                        </label>
-                    </div>
-
-                    <button type="submit" id="calculate-offline-btn" class="btn btn-primary btn-block">
-                        ⚡ RUN OFFLINE RAID SIMULATION
-                    </button>
-                </form>
-
-                <!-- Results Output Panel -->
-                <div id="offline-result-panel" class="panel-card result-panel">
-                    <h3 class="panel-heading">
-                        <span class="heading-icon">📊</span> Vulnerability Report
-                    </h3>
-
-                    <div id="offline-placeholder-state" class="empty-state">
-                        <div class="empty-icon">📡</div>
-                        <p class="empty-text">Configure your base parameters and hit simulate to analyze your raid odds.</p>
-                    </div>
-
-                    <div id="offline-calculated-state" class="calculated-content hidden">
-                        <div class="risk-gauge-container">
-                            <div class="gauge-circle" id="risk-gauge">
-                                <span class="gauge-value" id="risk-percent">0%</span>
-                                <span class="gauge-label">Raid Probability</span>
-                            </div>
-                            <div class="verdict-banner" id="risk-verdict">
-                                <span class="verdict-title" id="verdict-title">ALMOST CERTAINLY COOKED</span>
-                                <p class="verdict-desc" id="verdict-desc">Expect to wake up to a broken sleeping bag.</p>
-                            </div>
-                        </div>
-
-                        <div class="result-details-grid">
-                            <div class="detail-box">
-                                <span class="detail-label">Est. Time Until Boom</span>
-                                <span class="detail-val" id="time-to-boom">~ 2h 45m</span>
-                            </div>
-                            <div class="detail-box">
-                                <span class="detail-label">Required Boom (Sulfur)</span>
-                                <span class="detail-val text-accent" id="sulfur-cost">~ 4,400 Sulfur</span>
-                            </div>
-                            <div class="detail-box">
-                                <span class="detail-label">Primary Vulnerability</span>
-                                <span class="detail-val text-danger" id="weakest-point">Sheet Metal Doors</span>
-                            </div>
-                            <div class="detail-box">
-                                <span class="detail-label">Survival Recommendation</span>
-                                <span class="detail-val" id="survival-rec">Upgrade front air-lock & despawn sulfur</span>
-                            </div>
-                        </div>
-
-                        <div class="quote-box" id="offline-quote">
-                            "The only safe base in Rust is the one you haven't built yet." — XSANE
+                    <div class="stat-card" id="stat-nakeds-lost">
+                        <span class="stat-icon">💀</span>
+                        <div class="stat-details">
+                            <span class="stat-value text-accent" id="live-loot-status">Bagged & Tagged</span>
+                            <span class="stat-label">Server Status</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 3. What Kind Of Rust Player Are You? -->
-    <section id="player-type" class="app-section">
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-tag">IDENTITY QUIZ 02</div>
-                <h2 class="section-title">What Kind Of <span class="text-hazard">Rust Player</span> Are You?</h2>
-                <p class="section-desc">Answer 4 quick tactical questions to diagnose your exact psychological archetype in the Rust wasteland.</p>
-            </div>
+        <!-- 2. Will I Get Offlined? Checker -->
+        <section id="offline-checker" class="app-section section-dark">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-tag">DIAGNOSTIC ENGINE 01</div>
+                    <h2 class="section-title">Will I Get <span class="text-hazard">Offlined?</span> Checker</h2>
+                    <p class="section-desc">Input your base build, material tier, hours away, and neighborhood toxicity to compute your exact raid probability.</p>
+                </div>
 
-            <div class="quiz-container panel-card">
-                <form id="player-quiz-form" class="quiz-form">
-                    <!-- Question 1 -->
-                    <div class="quiz-question-block" id="q1-block">
-                        <h4 class="question-title">1. When you hear explosive ammo 2 grids over at 2 AM, what do you do?</h4>
-                        <div class="quiz-options-grid">
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q1" value="chad" required>
-                                <div class="option-body">
-                                    <span class="option-icon">🎯</span>
-                                    <span class="option-name">Full Metal AK Roam</span>
-                                    <span class="option-desc">Sprint straight into the chaos with a syringe and zero fear.</span>
-                                </div>
-                            </label>
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q1" value="grub">
-                                <div class="option-body">
-                                    <span class="option-icon">🐀</span>
-                                    <span class="option-name">Double Barrel Bush Grub</span>
-                                    <span class="option-desc">Creep in naked with a DB and waterpipe to snatch a free kit.</span>
-                                </div>
-                            </label>
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q1" value="roofcamper">
-                                <div class="option-body">
-                                    <span class="option-icon">🔭</span>
-                                    <span class="option-name">Climb the Roof with an L96</span>
-                                    <span class="option-desc">Scan the horizon through 8x scope without leaving shooting floor.</span>
-                                </div>
-                            </label>
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q1" value="farmer">
-                                <div class="option-body">
-                                    <span class="option-icon">⛏️</span>
-                                    <span class="option-name">Keep Smelting In Base</span>
-                                    <span class="option-desc">Furious Jackhammer farming continues. Upkeep is life.</span>
-                                </div>
+                <div class="checker-grid">
+                    <!-- Input Form -->
+                    <form id="offline-form" class="panel-card form-panel">
+                        <h3 class="panel-heading">
+                            <span class="heading-icon">🛡️</span> Base & Session Parameters
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="base-tier" class="form-label">Core Building Tier</label>
+                                <select id="base-tier" name="baseTier" class="form-select" required>
+                                    <option value="wood">Twig / Wood 2x1 (Instant Target)</option>
+                                    <option value="stone" selected>Stone (Standard Starting Base)</option>
+                                    <option value="sheet">Sheet Metal (Decent Protection)</option>
+                                    <option value="armored">High Quality Armored (Chunky Defense)</option>
+                                    <option value="bunker">Pixel / Suicide Bunker (Experienced)</option>
+                                    <option value="cave">Deep Cave Base (Nerve Wrecking)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="honeycomb-count" class="form-label">Honeycombing & Air-locks</label>
+                                <select id="honeycomb-count" name="honeycombCount" class="form-select">
+                                    <option value="0">No Honeycomb (Single wall to TC)</option>
+                                    <option value="1" selected>1 Layer Honeycomb (Standard 2x2)</option>
+                                    <option value="2">2 Layers + Gap Honeycomb</option>
+                                    <option value="3">3+ Layers Multi-TC Fortress</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="door-path" class="form-label">Door Path to Core TC</label>
+                                <select id="door-path" name="doorPath" class="form-select">
+                                    <option value="wood_doors">Wood Doors only (Eoka tier)</option>
+                                    <option value="single_sheet" selected>1-2 Sheet Metal Doors</option>
+                                    <option value="garage_doors">3+ Garage Doors + Air-lock</option>
+                                    <option value="armored_doors">Armored Doors + Reinforced Hatch</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="compound-type" class="form-label">External Compound</label>
+                                <select id="compound-type" name="compoundType" class="form-select">
+                                    <option value="none" selected>No Compound / Wide Open</option>
+                                    <option value="wood_walls">Wood High External Walls</option>
+                                    <option value="stone_walls">Stone High External + Gate</option>
+                                    <option value="double_compound">Double Layer + Auto Turrets</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="turrets-count" class="form-label">Active Auto Turrets & Traps</label>
+                                <input type="number" id="turrets-count" name="turretsCount" class="form-input" min="0" max="50" value="1" placeholder="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="offline-hours" class="form-label">Hours Planned Offline</label>
+                                <input type="number" id="offline-hours" name="offlineHours" class="form-input" min="1" max="168" value="8" placeholder="Hours asleep">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="upkeep-hours" class="form-label">TC Upkeep Remaining (Hours)</label>
+                                <input type="number" id="upkeep-hours" name="upkeepHours" class="form-input" min="0" max="720" value="16" placeholder="Hours of upkeep">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="neighbor-threat" class="form-label">Neighborhood Threat Level</label>
+                                <select id="neighbor-threat" name="neighborThreat" class="form-select">
+                                    <option value="low">Quiet Forest (Rare foot traffic)</option>
+                                    <option value="medium" selected>Near Gas Station / Substation</option>
+                                    <option value="high">Next to Launch Site / Oil Rig</option>
+                                    <option value="zerg">Overlooked by a 12-Man Zerg Compound</option>
+                                    <option value="beef">Pissed off the roofcamper 2 grids away</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-container" for="pissed-zerg">
+                                <input type="checkbox" id="pissed-zerg" name="pissedZerg">
+                                <span class="custom-checkbox"></span>
+                                <span class="checkbox-label">Did you kill someone with an AK and talk trash in global chat?</span>
                             </label>
                         </div>
-                    </div>
 
-                    <!-- Question 2 -->
-                    <div class="quiz-question-block" id="q2-block">
-                        <h4 class="question-title">2. What is your go-to primary weapon of choice?</h4>
-                        <div class="quiz-options-grid">
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q2" value="chad" required>
-                                <div class="option-body">
-                                    <span class="option-icon">🔫</span>
-                                    <span class="option-name">AK-47 / Custom SMG</span>
-                                    <span class="option-desc">Laser spray mastered through 2,000 hours of aim train.</span>
+                        <button type="submit" id="calculate-offline-btn" class="btn btn-primary btn-block">
+                            ⚡ RUN OFFLINE RAID SIMULATION
+                        </button>
+                    </form>
+
+                    <!-- Results Output Panel -->
+                    <div id="offline-result-panel" class="panel-card result-panel">
+                        <h3 class="panel-heading">
+                            <span class="heading-icon">📊</span> Vulnerability Report
+                        </h3>
+
+                        <div id="offline-placeholder-state" class="empty-state">
+                            <div class="empty-icon">📡</div>
+                            <p class="empty-text">Configure your base parameters and hit simulate to analyze your raid odds.</p>
+                        </div>
+
+                        <div id="offline-calculated-state" class="calculated-content hidden">
+                            <div class="risk-gauge-container">
+                                <div class="gauge-circle" id="risk-gauge">
+                                    <span class="gauge-value" id="risk-percent">0%</span>
+                                    <span class="gauge-label">Raid Probability</span>
                                 </div>
-                            </label>
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q2" value="grub">
-                                <div class="option-body">
-                                    <span class="option-icon">🧨</span>
-                                    <span class="option-name">Eoka Pistol & Crossbow</span>
-                                    <span class="option-desc">9 clicks of hope and 1 dead geared player.</span>
+                                <div class="verdict-banner" id="risk-verdict">
+                                    <span class="verdict-title" id="verdict-title">ALMOST CERTAINLY COOKED</span>
+                                    <p class="verdict-desc" id="verdict-desc">Expect to wake up to a broken sleeping bag.</p>
                                 </div>
-                            </label>
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q2" value="roofcamper">
-                                <div class="option-body">
-                                    <span class="option-icon">🦅</span>
-                                    <span class="option-name">Bolt Action / L96 / HV Rocket</span>
-                                    <span class="option-desc">Third-partying nakeds across two map squares.</span>
+                            </div>
+
+                            <div class="result-details-grid">
+                                <div class="detail-box">
+                                    <span class="detail-label">Est. Time Until Boom</span>
+                                    <span class="detail-val" id="time-to-boom">~ 2h 45m</span>
                                 </div>
-                            </label>
-                            <label class="quiz-option-card">
-                                <input type="radio" name="q2" value="farmer">
-                                <div class="option-body">
-                                    <span class="option-icon">🪓</span>
-                                    <span class="option-name">Salvaged Axe & Chainsaw</span>
-                                    <span class="option-desc">Why shoot bullets when you ca
+                                <div class="detail-box">
+                                    <span class="detail-label">Required Boom (Sulfur)</span>
+                                    <span class="detail-val text-accent" id="sulfur-cost">~ 4,400 Sulfur</span>
+                                </div>
+                                <div class="detail-box">
+                                    <span class="detail-label">Primary Vulnerability</span>
+                                    <span class="detail-val text-danger" id="weakest-point">Sheet Metal Doors</span>
+                                </div>
+                                <div class="detail-box">
+                                    <span class="detail-label">Survival Recommendation</span>
+                                    <span class="detail-val" id="survival-rec">Upgrade front air-lock & despawn sulfur</span>
+                                </div>
+                            </div>
+
+                            <div class="quote-box" id="offline-quote">
+                                "The only safe base in Rust is the one you haven't built yet." — XSANE
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. What Kind Of Rust Player Are You? -->
+        <section id="player-type" class="app-section">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-tag">IDENTITY QUIZ 02</div>
+                    <h2 class="section-title">What Kind Of <span class="text-hazard">Rust Player</span> Are You?</h2>
+                    <p class="section-desc">Answer 4 quick tactical questions to diagnose your exact psychological archetype in the Rust wasteland.</p>
+                </div>
+
+                <div class="quiz-container panel-card">
+                    <form id="player-quiz-form" class="quiz-form">
+                        <!-- Question 1 -->
+                        <div class="quiz-question-block" id="q1-block">
+                            <h4 class="question-title">1. When you hear explosive ammo 2 grids over at 2 AM, what do you do?</h4>
+                            <div class="quiz-options-grid">
+                                <label class="quiz-option-card">
+                                    <input type="radio" name="q1" value="chad" required>
+                                    <div class="option-body">
+                                        <span class="option-icon">🎯</span>
+                                        <span class="option-name">Full Metal AK Roam</span>
+                                        <span class="option-desc">Sprint straight into the chaos with a syringe and zero fear.</span>
+                                    </div>
+                                </label>
+                                <label class="quiz-option-card">
+                                    <input type="radio" name="q1" value="grub">
+                                    <div class="option-body">
+                                        <span class="option-icon">🐀</span>
+                                        <span class="option-name">Double Barrel Bush Grub</span>
+                                        <span class="option-desc">Creep in naked with a DB and waterpipe to snatch a free kit.</span>
+                                    </div>
+                                </label>
+                                <label class="quiz-option-card">
+                                    <input type="radio" name="q1" value="roofcamper">
+                                    <div class="option-body">
+                                        <span class="option-icon">🔭</span>
+                                        <span class="option-name">Climb the Roof with an L96</span>
+                                        <span class="option-desc">Scan the horizon through 8x scope without leaving shooting floor.</span>
+                                    </div>
+                                </label>
+                                <label class="quiz-option-card">
+                                    <input type="radio" name="q1" value="farmer">
+                                    <div class="option-body">
+                                        <span class="option-icon">⛏️
